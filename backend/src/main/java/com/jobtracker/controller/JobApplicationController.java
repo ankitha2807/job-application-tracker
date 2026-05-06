@@ -1,5 +1,7 @@
 package com.jobtracker.controller;
 
+import com.jobtracker.dto.DashboardStatsResponse;
+import com.jobtracker.dto.LetterAnalyticsResponse;
 import com.jobtracker.model.JobApplication;
 import com.jobtracker.service.JobApplicationService;
 import org.springframework.http.HttpStatus;
@@ -42,5 +44,10 @@ public class JobApplicationController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/analytics/letters")
+    public ResponseEntity<LetterAnalyticsResponse> getLetterAnalytics() {
+        return ResponseEntity.ok(service.getLetterAnalytics());
     }
 }

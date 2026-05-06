@@ -2,21 +2,23 @@ import { useState, useEffect } from 'react';
 import { X, Bot, Copy, CheckCircle2 } from 'lucide-react';
 import { generateCoverLetter } from '../services/api';
 
-export default function CoverLetterModal({ job, isOpen, onClose }) {
+export default function CoverLetterModal({ job, isOpen, onClose, onSaveCoverLetter, templateContent }) {
   const [skills, setSkills] = useState('');
   const [coverLetter, setCoverLetter] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      setCoverLetter('');
       setError('');
       setCopied(false);
+      setIsSaved(false);
       setSkills('');
+      setCoverLetter(templateContent || '');
     }
-  }, [isOpen]);
+  }, [isOpen, templateContent]);
 
   if (!isOpen || !job) return null;
 
@@ -42,6 +44,20 @@ export default function CoverLetterModal({ job, isOpen, onClose }) {
     navigator.clipboard.writeText(coverLetter);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSaveLetter = async () => {
+    setError('');
+    try {
+      const success = await onSaveCoverLetter(coverLetter);
+      if (success) {
+        setIsSaved(true);
+      } else {
+        setError('Failed to save cover letter. Please try again.');
+      }
+    } catch (err) {
+      setError('Failed to save cover letter. Please try again.');
+    }
   };
 
   return (
@@ -92,6 +108,15 @@ export default function CoverLetterModal({ job, isOpen, onClose }) {
               {isGenerating ? 'Generating with AI...' : 'Generate Cover Letter'}
             </button>
             {error && <p className="text-sm text-[var(--color-danger)] shrink-0">{error}</p>}
+            {coverLetter && (
+              <button
+                type="button"
+                onClick={handleSaveLetter}
+                className="btn-secondary w-full"
+              >
+                {isSaved ? 'Saved to job' : 'Save cover letter to job'}
+              </button>
+            )}
           </div>
 
           <div className="flex flex-col h-full border border-[var(--color-border)] rounded-xl bg-[#0f172a]/30 overflow-hidden relative shadow-inner">

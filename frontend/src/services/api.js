@@ -23,7 +23,15 @@ export const createJob = (job) => api.post('/jobs', job);
 export const updateJob = (id, job) => api.put(`/jobs/${id}`, job);
 export const deleteJob = (id) => api.delete(`/jobs/${id}`);
 export const getDashboardStats = () => api.get('/dashboard/stats');
+export const getLetterAnalytics = () => api.get('/jobs/analytics/letters');
 
 export const generateCoverLetter = (jobDescription, skills) => api.post('/cover-letter/generate', { jobDescription, skills });
+
+// Template API functions
+export const getTemplates = () => api.get('/templates');
+export const getMyTemplates = () => api.get('/templates/my');
+export const createTemplate = (template) => api.post('/templates', template);
+export const updateTemplate = (id, template) => api.put(`/templates/${id}`, template);
+export const deleteTemplate = (id) => api.delete(`/templates/${id}`);
 
 export default api;

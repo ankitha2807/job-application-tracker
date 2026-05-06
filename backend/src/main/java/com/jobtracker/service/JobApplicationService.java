@@ -1,6 +1,7 @@
 package com.jobtracker.service;
 
 import com.jobtracker.dto.DashboardStatsResponse;
+import com.jobtracker.dto.LetterAnalyticsResponse;
 import com.jobtracker.model.ApplicationStatus;
 import com.jobtracker.model.JobApplication;
 import com.jobtracker.model.User;
@@ -45,6 +46,7 @@ public class JobApplicationService {
         existing.setRole(updated.getRole());
         existing.setStatus(updated.getStatus());
         existing.setDescription(updated.getDescription());
+        existing.setCoverLetter(updated.getCoverLetter());
         existing.setDateApplied(updated.getDateApplied());
         return repository.save(existing);
     }
@@ -67,5 +69,44 @@ public class JobApplicationService {
     public void delete(Long id) {
         JobApplication job = getById(id);
         repository.delete(job);
+    }
+
+    public LetterAnalyticsResponse getLetterAnalytics() {
+        List<JobApplication> jobs = getAllForCurrentUser();
+
+        long totalWithLetters = jobs.stream()
+                .filter(job -> job.getCoverLetter() != null && !job.getCoverLetter().trim().isEmpty())
+                .count();
+
+        long interviewsWithLetters = jobs.stream()
+                .filter(job -> job.getCoverLetter() != null && !job.getCoverLetter().trim().isEmpty())
+                .filter(job -> job.getStatus() == ApplicationStatus.INTERVIEW ||
+                              job.getStatus() == ApplicationStatus.OFFER)
+                .count();
+
+        long offersWithLetters = jobs.stream()
+                .filter(job -> job.getCoverLetter() != null && !job.getCoverLetter().trim().isEmpty())
+                .filter(job -> job.getStatus() == ApplicationStatus.OFFER)
+                .count();
+
+        double interviewRate = totalWithLetters > 0 ? (double) interviewsWithLetters / totalWithLetters * 100 : 0;
+        double offerRate = totalWithLetters > 0 ? (double) offersWithLetters / totalWithLetters * 100 : 0;
+
+        // Calculate average response time for applications with letters
+        double avgResponseTime = jobs.stream()
+                .filter(job -> job.getCoverLetter() != null && !job.getCoverLetter().trim().isEmpty())
+                .filter(job -> job.getResponseTimeDays() != null)
+                .mapToInt(JobApplication::getResponseTimeDays)
+                .average()
+                .orElse(0.0);
+
+        return new LetterAnalyticsResponse(
+                totalWithLetters,
+                interviewsWithLetters,
+                offersWithLetters,
+                interviewRate,
+                offerRate,
+                avgResponseTime
+        );
     }
 }

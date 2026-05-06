@@ -12,30 +12,47 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+
     if (token) {
       setIsAuthenticated(true);
     }
+
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        localStorage.removeItem('user');
+      }
+    }
+
     setLoading(false);
   }, []);
 
+  const saveSession = (token, userData) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setIsAuthenticated(true);
+    setUser(userData);
+  };
+
   const login = async (email, password) => {
     const response = await apiLogin(email, password);
-    const { token } = response.data;
-    localStorage.setItem('token', token);
-    setIsAuthenticated(true);
+    const { token, fullName, email: userEmail } = response.data;
+    saveSession(token, { fullName, email: userEmail });
     return response.data;
   };
 
   const signup = async (fullName, email, password) => {
     const response = await apiSignup(fullName, email, password);
-    const { token } = response.data;
-    localStorage.setItem('token', token);
-    setIsAuthenticated(true);
+    const { token, fullName: name, email: userEmail } = response.data;
+    saveSession(token, { fullName: name, email: userEmail });
     return response.data;
   };
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setIsAuthenticated(false);
     setUser(null);
   };

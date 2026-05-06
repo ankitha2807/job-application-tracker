@@ -20,7 +20,8 @@ export default function SignupPage() {
       await signup(fullName, email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError('Registration failed. Please check your details.');
+      const serverMessage = err?.response?.data?.error;
+      setError(serverMessage || 'Registration failed. Please check your details.');
     } finally {
       setIsSubmitting(false);
     }
