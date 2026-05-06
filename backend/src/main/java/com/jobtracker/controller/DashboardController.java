@@ -21,4 +21,9 @@ public class DashboardController {
     public ResponseEntity<DashboardStatsResponse> getStats() {
         return ResponseEntity.ok(service.getDashboardStats());
     }
+
+    @GetMapping
+    public ResponseEntity<DashboardStatsResponse> getRootStats() {
+        return ResponseEntity.ok(service.getDashboardStats());
+    }
 }

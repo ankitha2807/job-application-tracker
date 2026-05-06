@@ -32,9 +32,13 @@ public class CoverLetterService {
                 - Do NOT include placeholder names or addresses — write the body content only
                 """.formatted(jobDescription, skills);
 
-        return chatClient.prompt()
-                .user(prompt)
-                .call()
-                .content();
+        try {
+            return chatClient.prompt()
+                    .user(prompt)
+                    .call()
+                    .content();
+        } catch (Exception ex) {
+            return "We could not generate the cover letter automatically right now. Please use the built-in editor to write a strong letter based on your job description and skills.";
+        }
     }
 }
