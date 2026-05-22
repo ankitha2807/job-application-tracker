@@ -16,10 +16,10 @@
 | Kanban board by status (Applied → Interview → Offer → Rejected) | ✅ Done |
 | Dashboard analytics (total, interviews, offers, rejections) | ✅ Done |
 | AI Cover Letter Generator (Groq API — free) | ✅ Done |
-| Landing page with hero + feature cards | 🔄 In Progress |
-| Search and filter applications | 🔄 In Progress |
-| Mobile responsive design | 🔄 In Progress |
-| Save cover letters per job | 🔄 In Progress |
+| Landing page with hero + feature cards | ✅ Done |
+| Search and filter applications | ✅ Done |
+| Mobile responsive design | ✅ Done |
+| Save cover letters per job | ✅ Done |
 
 ---
 
@@ -112,7 +112,3 @@ job-application-tracker/
 Developed as part of the **FutureAcad Internship 2026**
 
 ---
-
-## 📄 License
-
-MIT License
